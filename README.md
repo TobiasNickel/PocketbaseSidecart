@@ -1,0 +1,2 @@
+# PocketbaseSidecart
+Sidecart for Pocketbase
