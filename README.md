@@ -6,6 +6,7 @@ With this project I want to provide an easy way to implement functionalities, cu
 - emails
 - notifications
 - execute js functions streight from a collection, such as automatic cleanup of old outdated data.
+- triggers, execute code on pocketbase subscribtions
 - replication
 
 Actually I wished these functionality would be build in to Pocketbase and maybe this project can serve as a prove of concept.
