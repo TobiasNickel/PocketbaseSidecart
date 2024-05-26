@@ -3,10 +3,10 @@ Sidecart for Pocketbase
 With this project I want to provide an easy way to implement functionalities, currently not possible in pocketbase.
 
 - cronjobs
-- emails
+- emails, sending and reading
 - notifications
-- execute js functions streight from a collection, such as automatic cleanup of old outdated data.
-- triggers, execute code on pocketbase subscribtions
+- execute js functions straight from a collection, such as automatic cleanup of old outdated data.
+- triggers, execute code on pocketbase subscriptions
 - replication
 - upload/update files through UI to public (even zipped folders)
 

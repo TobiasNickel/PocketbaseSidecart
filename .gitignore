@@ -128,3 +128,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+pocketbasesidecart
+bun.lockb
+temp/
+schemaPub.html
+tmp
