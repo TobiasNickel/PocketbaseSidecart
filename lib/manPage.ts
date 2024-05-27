@@ -41,6 +41,22 @@ Functions are javascript code that can be executed by different triggers. The fu
     - underscore package
     - cheerio package
     please open a github issue for adding more useful libraries.
+example: here is an example of a function:
+    name: test
+    code: |
+        const fs = await import('fs')
+        return async function (e) {
+            fs.writeFileSync('test.txt', JSON.stringify(e.arg))
+        }
+1. You can only use dynamic imports to load packages.
+2. You return one function (async or not)
+EventArguments:
+    - pb: PocketBase
+    - arg: any - besides one complex parameter to the function, you can pass any complex object to this property.
+    - trigger: about the source of the event (including type an potentially the user)
+
+
+
 `,
 commands:`
 The available commands are:
