@@ -1,5 +1,4 @@
-executable, seSidecart
-Sidecart for Pocketbase
+# SideCart for Pocketbase
 With this project I want to provide an easy way to implement functionalities, currently not possible in pocketbase.
 
 - cronjobs
@@ -9,6 +8,8 @@ With this project I want to provide an easy way to implement functionalities, cu
 - triggers, execute code on pocketbase subscriptions
 - replication
 - upload/update files through UI to public (even zipped folders)
+
+**disclaimer:** This project is not affiliated with the Pocketbase Project. We just like and use it.
 
 Actually I wished these functionality would be build in to Pocketbase and maybe this project can serve as a prove of concept.
 

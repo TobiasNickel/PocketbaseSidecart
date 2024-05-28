@@ -4,6 +4,7 @@ import { runMigrations } from "./lib/migrate"
 import { manPage, manPages } from "./lib/manPage"
 import { showTable } from "./lib/showTable"
 import { run } from "./lib/run"
+import { connect } from "./lib/pocketbase"
 
 if (options.opt.help) {
   console.log("Usage: node index.ts --username=USERNAME --password=PASSWORD")
@@ -55,35 +56,24 @@ const HOST = process.env.HOST || "https://localhost/"
 const userName = options.opt.username || "sc@example.com" //'sidecart'
 const password = options.opt.password || "aaaaaaaaaa" //'sidecart'
 
-const pb = new PocketBase(HOST)
-pb.autoCancellation(false)
+async function main(){
+  const pb = await connect(HOST, options.opt.admin, userName, password)
 
-type Subscription = {
-  id: string
-  name: string
-  filter: string
-};
-const authCollection = options.opt.admin ? pb.admins : pb.collection("SC_user");
+  if(!options.opt.command){ return }
+  if (options.opt.command.toLowerCase() === "migrate") {
+    await runMigrations(pb)
+    return;
+  } else if (options.opt.command.toLowerCase() === "printTable".toLowerCase()) {
+    await showTable(pb)
+  } else if (options.opt.command.toLowerCase() === "run") {
+    await run(pb)
+  } else {
+    console.log('unknown command, use --help')
+  }
+}
 
-await (authCollection as any)
-  .authWithPassword(userName, password)
-  .then(async () => {
-    // console.log("Logged in");
-    // console.log("isValid", pb.authStore.isValid);
-    // console.log("token", pb.authStore.token);
-    // console.log("user", pb.authStore.model);
-    if(!options.opt.command){return}
-    if (options.opt.command.toLowerCase() === "migrate") {
-      await runMigrations(pb)
-      return;
-    } else if (options.opt.command.toLowerCase() === "printTable".toLowerCase()) {
-      await showTable(pb)
-    } else if (options.opt.command.toLowerCase() === "run"){
-        await run(pb)
-    } else {
-        console.log('unknown command, use --help')
-    }
-    // const subscriptions = await pb.collection<Subscription>('SC_subscription').getList(0,100000)
-    // console.log({subscriptions})
-  });
+main().catch(e=>{
+  console.error(e)
+  process.exit(1)
+})
 

@@ -14,12 +14,22 @@ All tables that the SideCart is using, are prefixed with "SC_".
     SC_tasks: describe the need to call a function. with its name and arguments.
     SC_public_files: for uploading files to public with support for zip archives. and replacement of directories (useful for deployments through UI or API)
     SC_web_push_subscriptions: web-push subscriptions
-    SC_notifications: messages to be send to the subscriptions
+    SC_status: the status of the pocketbaseSideCart
+    SC_public: the public data for the sidecart. such as the web-push public key.
 `,
 SC_config:`
 The SC_config table is a key value store to influence the behavior of the pocketbaseSideCart.
     migrate_version: the current migration version
     public_files: the public files directory
+    web_push_vapid_public_key: the public key for web-push
+    web_push_vapid_private_key: the private key for web-push
+`,
+SC_status:`
+SC_status is an internal key value store to store the status of the pocketbaseSideCart.
+    last_active: the last time the pocketbaseSideCart was active updated every minute. So if this time is older than 5 minutes, the pocketbaseSideCart is considered inactive/disconnected.
+    last_error: the last error that occurred in the pocketbaseSideCart
+    sidecart_id: the id of the active pocketbase SideCart. with this, we ensure only one SideCart is active.
+    sidecart_version: the version of the active pocketbase SideCart.
 `,
 SC_functions:`
 Javascript functions that can be executed by different triggers.
@@ -54,9 +64,7 @@ EventArguments:
     - pb: PocketBase
     - arg: any - besides one complex parameter to the function, you can pass any complex object to this property.
     - trigger: about the source of the event (including type an potentially the user)
-
-
-
+    - notification
 `,
 commands:`
 The available commands are:
@@ -67,6 +75,14 @@ The available commands are:
     - printFunctions: print all functions
     - printCron: print all cronjobs
 `,
+notifications:`
+Notifications also work through the SC_functions. 
+The SC_subscription table is used to store the subscriptions.
+The idKey field is used to identify the user from any auth-collection you need.
+The idKey field could also group subscriptions into some kind of topic. you choose.
+The SC_subscription table is intended that the user input his own subscription into the table.
+pocketbaseSideCart will automatically delete expired and invalid subscriptions.
+`
 } as {[x: string]: string}
 
 Object.keys(manPages).forEach(key=>{
