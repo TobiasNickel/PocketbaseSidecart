@@ -118,4 +118,68 @@ export const up = async (db: PocketBase) => {
     indexes: [],
     options: {},
   });
+  await db.collections.create({
+    name: "SC_public_files",
+    type: "base",
+    system: false,
+    schema: [
+      {
+        system: false,
+        name: "path",
+        type: "text",
+        required: false,
+        presentable: false,
+        unique: false,
+        options: {
+          min: null,
+          max: null,
+          pattern: "",
+        },
+      },
+      {
+        system: false,
+        name: "textContent",
+        type: "editor",
+        required: false,
+        presentable: false,
+        unique: false,
+        options: {
+          convertUrls: false,
+        },
+      },
+      {
+        system: false,
+        name: "file",
+        type: "file",
+        required: false,
+        presentable: false,
+        unique: false,
+        options: {
+          mimeTypes: [],
+          thumbs: [],
+          maxSelect: 1,
+          maxSize: 5242880,
+          protected: false,
+        },
+      },
+      {
+        system: false,
+        name: "delete",
+        type: "bool",
+        required: false,
+        presentable: false,
+        unique: false,
+        options: {},
+      },
+    ],
+    indexes: [
+      "CREATE UNIQUE INDEX `idx_path` ON `SC_public_files` (`path`)"
+    ],
+    listRule: "@request.auth.id=@collection.SC_user.id",
+    viewRule: "@request.auth.id=@collection.SC_user.id",
+    createRule: null,
+    updateRule: null,
+    deleteRule: "@request.auth.id=@collection.SC_user.id",
+    options: {},
+  });
 };

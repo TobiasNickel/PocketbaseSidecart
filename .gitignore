@@ -134,3 +134,7 @@ bun.lockb
 temp/
 schemaPub.html
 tmp
+local/
+public/
+pb_public/
+pb_data/

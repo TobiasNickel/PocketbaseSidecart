@@ -2,7 +2,7 @@ import PocketBase from "pocketbase"
 import { options } from "./lib/options"
 import { runMigrations } from "./lib/migrate"
 import { manPage, manPages } from "./lib/manPage"
-import { showTable } from "./lib/showTable"
+import { printTable } from "./lib/printTable"
 import { run } from "./lib/run"
 import { connect } from "./lib/pocketbase"
 
@@ -52,9 +52,9 @@ if (!options.opt.command) {
   options.opt.command = "run";
 }
 
-const HOST = process.env.HOST || "https://localhost/"
-const userName = options.opt.username || "sc@example.com" //'sidecart'
-const password = options.opt.password || "aaaaaaaaaa" //'sidecart'
+const HOST = options.opt.host || process.env.HOST || "https://localhost/"
+const userName = options.opt.username || "sidecart"
+const password = options.opt.password || "sidecart"
 
 async function main(){
   const pb = await connect(HOST, options.opt.admin, userName, password)
@@ -64,7 +64,7 @@ async function main(){
     await runMigrations(pb)
     return;
   } else if (options.opt.command.toLowerCase() === "printTable".toLowerCase()) {
-    await showTable(pb)
+    await printTable(pb)
   } else if (options.opt.command.toLowerCase() === "run") {
     await run(pb)
   } else {

@@ -7,31 +7,58 @@ However the most important command the "run" command is made to run as an SC_use
 In most cases, the SC_user table, will only contain one user.
 `,
 SC_tables:`
-All tables that the SideCart is using, are prefixed with "SC_".
-    SC_config: basically a key value store to influence the behavior of the pocketbaseSideCart.
-    SC_functions: javascript functions that can be executed by different triggers.
-    SC_cron: defining cronjob with cron pattern and function name from SC_functions.
+All tables that the SC is using, are prefixed with "SC_".
+    SC_user: the user table
+    SC_config: basically a key value store to influence the behavior of the SC.
+    SC_function: javascript functions that can be executed by different triggers.
+    SC_cron: defining cronjob with cron pattern and function name from SC_function.
     SC_tasks: describe the need to call a function. with its name and arguments.
     SC_public_files: for uploading files to public with support for zip archives. and replacement of directories (useful for deployments through UI or API)
     SC_web_push_subscriptions: web-push subscriptions
-    SC_status: the status of the pocketbaseSideCart
-    SC_public: the public data for the sidecart. such as the web-push public key.
+    SC_status: the status of the SC
+for all tables, you can decide to add custom rules and fields.
 `,
 SC_config:`
-The SC_config table is a key value store to influence the behavior of the pocketbaseSideCart.
+The SC_config table is a key value store to influence the behavior of the SC.
     migrate_version: the current migration version
     public_files: the public files directory
     web_push_vapid_public_key: the public key for web-push
+    web_push_vapid_public_key_public_path: path to save the key in a public file, 
+            default to /sc/vapid_public_key
     web_push_vapid_private_key: the private key for web-push
 `,
 SC_status:`
-SC_status is an internal key value store to store the status of the pocketbaseSideCart.
-    last_active: the last time the pocketbaseSideCart was active updated every minute. So if this time is older than 5 minutes, the pocketbaseSideCart is considered inactive/disconnected.
-    last_error: the last error that occurred in the pocketbaseSideCart
-    sidecart_id: the id of the active pocketbase SideCart. with this, we ensure only one SideCart is active.
-    sidecart_version: the version of the active pocketbase SideCart.
+SC_status is an internal key value store to store the status of the SC.
+    last_active: the last time the SC was active updated every minute. So if this time is older than 5 minutes, the SC is considered inactive/disconnected.
+    last_error: the last error that occurred in the SC
+    sidecart_id: the id of the active SC. with this, we ensure only one SideCart is active.
+    sidecart_version: the version of the active SC.
 `,
-SC_functions:`
+SC_tasks:`
+The SC_tasks table is used to describe the need to execute a function. with its name and arguments.
+fields:
+    - name: the name of the function
+    - args: the arguments that are passed to the function
+    - need_result: boolean, if true, the result of the function will be stored in the result field. otherwise the task is deleted afterwords.
+    - result: the result of the function
+    - error: the error of the function
+    - status: pending, running, done, error
+You decide the access rules for this table. 
+In the API's-Create-Rules you can specify for each function name who is allowed to create a task.
+    (@request.data.name = "functionName" && @request.auth.id = @collections.userRoles.userId && @collections.userRoles.role = "publisher")
+    || ... the same structure again
+
+`,
+SC_public_files:`
+The SC_public_files table is used to upload or edit files to the public directory.
+fields:
+    - path: the path of the file including the name
+    - content: the content of the file in text format
+    - file: usually null, but when you upload a file here, SC will write this content to the public directory and remove the content from the collection.
+    - delete: false, when you set this to true, the file will be deleted from the public directory and SC will remove it from this table.
+When SC is starting this table is completely deleted. Read all directories within public and write them to this collection.
+`,
+SC_function:`
 Javascript functions that can be executed by different triggers.
     name: the name of the function
     code: the javascript code
@@ -68,7 +95,7 @@ EventArguments:
 `,
 commands:`
 The available commands are:
-    - run: run the pocketbaseSideCart
+    - run: run the pocketbaseSideCart (SC)
     - migrate: run the migrations
     - printTable: show the tables
     - testFunction: test a function
@@ -76,7 +103,7 @@ The available commands are:
     - printCron: print all cronjobs
 `,
 notifications:`
-Notifications also work through the SC_functions. 
+Notifications also work through the SC_function. 
 The SC_subscription table is used to store the subscriptions.
 The idKey field is used to identify the user from any auth-collection you need.
 The idKey field could also group subscriptions into some kind of topic. you choose.
@@ -90,7 +117,7 @@ Object.keys(manPages).forEach(key=>{
 })
 
 export const manPage = `
-With --man you can read more about pocketbasesidecart.
+With --man you can read more about pocketbasesidecart (SC).
 use it together with the --page=PAGE page flag to read about a specific topic.
 the available pages are:
   - ${Object.keys(manPages).join('\n  - ')}

@@ -1,4 +1,7 @@
 import PocketBase from 'pocketbase'
+import EventSource from 'eventsource';
+(global as any).EventSource = EventSource;
+
 
 // a primitive type
 export type Primitive = string | number | boolean | null | undefined
@@ -19,7 +22,8 @@ export async function connect(host: string, isAdmin: boolean, userName: string, 
     pb.autoCancellation(false)
 
     const authCollection = isAdmin ? pb.admins : pb.collection("SC_user");
-
+    console.log('connecting to pocketbase', {host, userName, password, isAdmin})
     await (authCollection as any).authWithPassword(userName, password)
+    console.log('connected to pocketbase')
     return pb
 }

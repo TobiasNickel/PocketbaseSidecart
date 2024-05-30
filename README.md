@@ -3,17 +3,19 @@ With this project I want to provide an easy way to implement functionalities, cu
 
 - cronjobs
 - emails, sending and reading
-- notifications
+- notifications, web-push and mobile
 - execute js functions straight from a collection, such as automatic cleanup of old outdated data.
 - triggers, execute code on pocketbase subscriptions
 - replication
 - upload/update files through UI to public (even zipped folders)
+- edit text files direct from a collection
+- data migrations
 
 **disclaimer:** This project is not affiliated with the Pocketbase Project. We just like and use it.
 
 Actually I wished these functionality would be build in to Pocketbase and maybe this project can serve as a prove of concept.
 
-I decided to make this using Bun, because it can compile into a a single executable juat like Pocketbase.
+I decided to make this using Bun, because it can compile into a a single executable just like Pocketbase.
 
 The plan is that this sidecart will not host a public webserver, but only use the pocketbase SDK to communicate with the pocketbase server.
 
@@ -31,3 +33,4 @@ We will evaluate how much of this can be automated.
 
 We should avoid reading the sqlitefile ourselves directly from the sidecart. maybe limit this to migration tasks. but time will show.
 
+Having the feature of data migration, and functions, pocketbase can be used in a sharded setup. you can have one DB for serving public users, an other to serve logged in users and third one where authors maintain your master data. This will provide you with an extra layer of security and enable you to separate the load.

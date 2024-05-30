@@ -1,7 +1,7 @@
 import PocketBase from "pocketbase"
 import { options } from "./options"
 
-export async function showTable(pb: PocketBase) {
+export async function printTable(pb: PocketBase) {
     const collections = (await pb.collections.getList(0, 1000)).items
     if (options.opt.tablename) {
         const collection = collections.find(
