@@ -15,6 +15,7 @@
   "dependencies": {
     "@types/eventsource": "^1.1.15",
     "@types/mime-types": "^2.1.4",
+    "@types/web-push": "^3.6.3",
     "cron": "^3.1.7",
     "dotenv": "^16.4.5",
     "eventsource": "^2.0.2",

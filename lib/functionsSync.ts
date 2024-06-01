@@ -3,6 +3,8 @@ import { CONST } from "./const"
 import { compileFunction } from "./compileFunction"
 
 export const functions = new Map<string, Function>()
+export const usedFunctionSyncConfigs: string[] = [];
+
 
 export const runFunctionSync = async (pb: PocketBase) => {
     const functionCollection = pb.collection(CONST.COLLECTION_NAMES.SC_FUNCTION)
@@ -14,6 +16,9 @@ export const runFunctionSync = async (pb: PocketBase) => {
     const unsubscribe = await functionCollection.subscribe('*',async (event) => {
         const action = event.action
         const record = event.record
+        if(record.error){
+            return
+        }
         if (action === 'create' || action === 'update') {
             await addFunction(record, functionCollection)
         } else if (action === 'delete') {
@@ -35,7 +40,7 @@ async function addFunction(record: RecordModel, functionCollection: RecordServic
         if (e instanceof Error) {
             await functionCollection.update(record.id, { error: e.message + '\n' + e.stack })
         } else {
-            await functionCollection.update(record.id, { error: 'unknown error' })
+            await functionCollection.update(record.id, { error: 'unknown error:' + e?e!.toString():'' })
         }
     }
 }

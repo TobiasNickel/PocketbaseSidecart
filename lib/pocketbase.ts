@@ -1,7 +1,8 @@
-import PocketBase from 'pocketbase'
+import pocketbase from 'pocketbase'
 import EventSource from 'eventsource';
 (global as any).EventSource = EventSource;
 
+export const PocketBase = pocketbase
 
 // a primitive type
 export type Primitive = string | number | boolean | null | undefined

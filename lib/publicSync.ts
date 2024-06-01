@@ -3,11 +3,13 @@ import PocketBase from 'pocketbase'
 import { CONST } from './const'
 import { lookup } from 'mime-types'
 
+export const usedPublicSyncConfigs: string[] = ['publicDirectory'];
 
-export async function publicSyncRun(pb: PocketBase, directory: string) {
+export async function publicSyncRun(pb: PocketBase, config: any) {
+    const directory = config.publicDirectory || './pb_public'
     const allFiles = await fs.readdir(directory, { withFileTypes: true, recursive: true})
-    console.log('allFiles', allFiles)
     const fileCollection = pb.collection(CONST.COLLECTION_NAMES.SC_PUBLIC_FILES)
+    console.log('publicSyncRun before getFullList',)
     const fileIDs = (await fileCollection.getFullList({fields:'id'})).map(i=>i.id)
     console.log(fileIDs)
     await Promise.all(fileIDs.map(id=>fileCollection.delete(id))) 
@@ -15,13 +17,15 @@ export async function publicSyncRun(pb: PocketBase, directory: string) {
     await Promise.all(allFiles.map(async (file) => {
         if (file.isFile()) {
             const mime = lookup(directory+'/'+file.name) ||''
-            console.log('file', file.name, mime)
             const isText = mime.startsWith('text') || mime.startsWith('application/js') || mime.startsWith('application/javascript')
+
+            console.log('file', file.name, mime)
             await fileCollection.create({
                 path: file.name,
                 textContent: isText ? (await fs.readFile(directory+'/'+file.name)).toString():'',
                 delete: false,
             })
+            console.log('file created', file.name, mime, isText)
         }
     }))
     console.log('file sync done')

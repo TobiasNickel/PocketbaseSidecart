@@ -14,7 +14,8 @@ All tables that the SC is using, are prefixed with "SC_".
     SC_cron: defining cronjob with cron pattern and function name from SC_function.
     SC_tasks: describe the need to call a function. with its name and arguments.
     SC_public_files: for uploading files to public with support for zip archives. and replacement of directories (useful for deployments through UI or API)
-    SC_web_push_subscriptions: web-push subscriptions
+    SC_subscription: web-push subscriptions
+    SC_hooks_files: js files for pocketbase hooks
     SC_status: the status of the SC
 for all tables, you can decide to add custom rules and fields.
 `,
@@ -33,6 +34,19 @@ SC_status is an internal key value store to store the status of the SC.
     last_error: the last error that occurred in the SC
     sidecart_id: the id of the active SC. with this, we ensure only one SideCart is active.
     sidecart_version: the version of the active SC.
+`,
+SC_hooks_files:`
+The SC_hooks_files table is used to create and edit js files for pocketbase hooks.
+fields:
+    - name: the name of the file
+    - textContent: the content of the file
+    - delete: false, when you set this to true, the file will be deleted from the hooks directory and SC will remove it from this table.
+When SC is starting this table is completely deleted. Read all directories within the hooks directory and write them to this collection.
+
+There are 2 reasons to use hooks over SC_functions:
+  1. They can execute many db queries faster with less networking overhead(even if it is local)
+  2. expose custom APIs to the client
+
 `,
 SC_tasks:`
 The SC_tasks table is used to describe the need to execute a function. with its name and arguments.
@@ -57,6 +71,15 @@ fields:
     - file: usually null, but when you upload a file here, SC will write this content to the public directory and remove the content from the collection.
     - delete: false, when you set this to true, the file will be deleted from the public directory and SC will remove it from this table.
 When SC is starting this table is completely deleted. Read all directories within public and write them to this collection.
+`,
+SC_cron:`
+The SC_cron table is used to define cronjobs with cron pattern and function name from SC_function.
+fields:
+    - cron: the cron pattern
+    - function: the name of the function
+    - args: the arguments that are passed to the function
+    - last_run: the last time the cronjob was executed
+    - error: the last error of the cronjob
 `,
 SC_function:`
 Javascript functions that can be executed by different triggers.
