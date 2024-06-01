@@ -1,36 +1,36 @@
-# SideCart for Pocketbase
-With this project I want to provide an easy way to implement functionalities, currently not possible in pocketbase.
+# Pocketbase SideCart
+The Pocketbase SideCart is an open source project that adds extra functionality to work with the Pocketbase database. It aims to provide an easy way to implement common features not currently supported by Pocketbase natively.
 
-- cronjobs
-- emails, sending and reading
-- notifications, web-push and mobile
-- execute js functions straight from a collection, such as automatic cleanup of old outdated data.
-- triggers, execute code on pocketbase subscriptions
-- replication
-- upload/update files through UI to public (even zipped folders)
-- edit text files direct from a collection
-- data migrations
+## Features
+Cron jobs - Schedule tasks to run on a repeating schedule
+Email - Send and receive emails (planned also receiving via IMAP)
+Notifications - Push notifications via web and mobile (planned)
+Functions - Execute JavaScript functions, just code them inside the PB admin interface and use all npm modules.
+Triggers - Execute functions that use the npm packages ecosystem
+Replication - Mirror data between databases (planned)
+Files - Upload/update files through the UI to a public folder (single file upload working)
+Hooks - edit js hooks right in your PB admin interface.
 
-**disclaimer:** This project is not affiliated with the Pocketbase Project. We just like and use it.
+Data migrations - Easily migrate data between databases
+More features coming soon!
+Usage
+To use the SideCart, run it alongside your Pocketbase server:
 
-Actually I wished these functionality would be build in to Pocketbase and maybe this project can serve as a prove of concept.
+```sh
+./pocketbase serve
+./pocketbasesidecart -c=migrate --admin --username=name --password=password --host=http://localhost:8090
+./pocketbasesidecart -c=run
+```
+This will subscribe the SideCart to your Pocketbase database. Features are then configured via collections like SC_cron and exposed through a simple API.
 
-I decided to make this using Bun, because it can compile into a a single executable just like Pocketbase.
+Documentation
+For a available options use `./pocketbasesidecart --help` or read in dept documentation with `./pocketbasesidecart --man`. 
 
-The plan is that this sidecart will not host a public webserver, but only use the pocketbase SDK to communicate with the pocketbase server.
+Learn how to:
 
-I considered to build these functionalities directly into pocketbase and publish it as a distro or plugin. but i feel more proficient with js, so bun it is,...
+Configure cron jobs
+Upload and edit files right from admin interface
+Run JavaScript functions (planned)
 
-The communication to pocketbase will work through its subscribe features. the sidecart will subscribe on an emails table or on a cron table. and so on. those tables can be configured within pocketbase with the needed writing and reading access.
+We welcome issues, pull requests, and any feedback! Reach out if you have any other questions.
 
-the sidecart might even use pocketbase itself to log its own status visible to a pocketbase admin.
-
-as the sidecart will use a number of collections there will be a prefix available.
-
-The sidecart will also offer a file for import into pocketbase, so those tables don't need to get created manually by hand.
-
-We will evaluate how much of this can be automated. 
-
-We should avoid reading the sqlitefile ourselves directly from the sidecart. maybe limit this to migration tasks. but time will show.
-
-Having the feature of data migration, and functions, pocketbase can be used in a sharded setup. you can have one DB for serving public users, an other to serve logged in users and third one where authors maintain your master data. This will provide you with an extra layer of security and enable you to separate the load.

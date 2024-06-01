@@ -129,7 +129,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-pocketbasesidecart
+pocketbasesidecart*
 bun.lockb
 temp/
 schemaPub.html
