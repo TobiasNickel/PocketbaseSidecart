@@ -58,6 +58,8 @@ const password = options.opt.password || "sidecart"
 
 async function main(){
   const pb = await connect(HOST, options.opt.admin, userName, password)
+  console.log('connected to pocketbase', {HOST, userName, password, isAdmin: options.opt.admin})
+  
 
   if(!options.opt.command){ return }
   if (options.opt.command.toLowerCase() === "migrate") {
@@ -74,6 +76,7 @@ async function main(){
 
 main().catch(e=>{
   console.error(e)
+  console.log(e.stack)
   process.exit(1)
 })
 

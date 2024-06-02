@@ -1,6 +1,7 @@
 import PocketBase from "pocketbase";
 
 export const up = async (db: PocketBase) => {
+
   await db.collection("SC_user").create({
     username: "sidecart",
     email: "test@example.com",
@@ -53,6 +54,11 @@ export const up = async (db: PocketBase) => {
     name: "SC_function",
     type: "base",
     system: false,
+    listRule: "@request.auth.id = @collection.SC_user.id",
+    viewRule: "@request.auth.id = @collection.SC_user.id",
+    createRule: "@request.auth.id = @collection.SC_user.id",
+    updateRule: "@request.auth.id = @collection.SC_user.id",
+    deleteRule: "@request.auth.id = @collection.SC_user.id",
     schema: [
       {
         name: "name",
@@ -78,8 +84,22 @@ export const up = async (db: PocketBase) => {
           pattern: "",
         },
       },
+      {
+        name: "error",
+        type: "text",
+        system: false,
+        required: false,
+        unique: false,
+        options: {
+          min: null,
+          max: null,
+          pattern: "",
+        },
+      },
     ],
-    indexes: ["CREATE UNIQUE INDEX `idx_A1yFVVJ` ON `SC_function` (`name`)"],
+    indexes: [
+      "CREATE UNIQUE INDEX `idx_functions_name` ON `SC_function` (`name`)",
+    ],
     options: {},
   });
   await db.collections.create({
@@ -101,24 +121,9 @@ export const up = async (db: PocketBase) => {
       },
       {
         name: "function",
-        type: "relation",
-        system: false,
-        required: false,
-        unique: false,
-        options: {
-          collectionId: functionCollection.id,
-          cascadeDelete: false,
-          minSelect: null,
-          maxSelect: 1,
-          displayFields: null,
-        },
-      },
-      {
-        system: false,
-        name: "error",
         type: "text",
+        system: false,
         required: false,
-        presentable: false,
         unique: false,
         options: {
           min: null,
@@ -137,7 +142,34 @@ export const up = async (db: PocketBase) => {
           maxSize: 2000000,
         },
       },
+      {
+        system: false,
+        name: "error",
+        type: "text",
+        required: false,
+        presentable: false,
+        unique: false,
+        options: {
+          min: null,
+          max: null,
+          pattern: "",
+        },
+      },
+      {
+        name: "paused",
+        type: "bool",
+        system: false,
+        required: false,
+        presentable: false,
+        unique: false,
+        options: {},
+      },
     ],
+    listRule: "@request.auth.id = @collection.SC_user.id",
+    viewRule: "@request.auth.id = @collection.SC_user.id",
+    createRule: "@request.auth.id = @collection.SC_user.id",
+    updateRule: "@request.auth.id = @collection.SC_user.id",
+    deleteRule: "@request.auth.id = @collection.SC_user.id",
     indexes: [],
     options: {},
   });
@@ -195,17 +227,19 @@ export const up = async (db: PocketBase) => {
         options: {},
       },
     ],
-    indexes: ["CREATE UNIQUE INDEX `idx_path` ON `SC_public_files` (`path`)"],
-    listRule: "@request.auth.id=@collection.SC_user.id",
-    viewRule: "@request.auth.id=@collection.SC_user.id",
-    createRule: null,
-    updateRule: null,
-    deleteRule: "@request.auth.id=@collection.SC_user.id",
+    indexes: [
+      "CREATE UNIQUE INDEX `idx_public_files_path` ON `SC_public_files` (`path`)",
+    ],
+    listRule: "@request.auth.id = @collection.SC_user.id",
+    viewRule: "@request.auth.id = @collection.SC_user.id",
+    createRule: "@request.auth.id = @collection.SC_user.id",
+    updateRule: "@request.auth.id = @collection.SC_user.id",
+    deleteRule: "@request.auth.id = @collection.SC_user.id",
     options: {},
   });
 
   await db.collections.create({
-    name: "SC_hooks",
+    name: "SC_hooks_files",
     type: "base",
     system: false,
     schema: [
@@ -225,12 +259,14 @@ export const up = async (db: PocketBase) => {
       {
         system: false,
         name: "textContent",
-        type: "editor",
+        type: "text",
         required: false,
         presentable: false,
         unique: false,
         options: {
-          convertUrls: false,
+          min: null,
+          max: null,
+          pattern: "",
         },
       },
       {
@@ -243,12 +279,12 @@ export const up = async (db: PocketBase) => {
         options: {},
       },
     ],
-    indexes: ["CREATE UNIQUE INDEX `idx_path` ON `SC_public_files` (`path`)"],
-    listRule: "@request.auth.id=@collection.SC_user.id",
-    viewRule: "@request.auth.id=@collection.SC_user.id",
-    createRule: null,
-    updateRule: null,
-    deleteRule: "@request.auth.id=@collection.SC_user.id",
+    indexes: ["CREATE UNIQUE INDEX `idx_hooks_name` ON `SC_hooks` (`name`)"],
+    listRule: "@request.auth.id = @collection.SC_user.id",
+    viewRule: "@request.auth.id = @collection.SC_user.id",
+    createRule: "@request.auth.id = @collection.SC_user.id",
+    updateRule: "@request.auth.id = @collection.SC_user.id",
+    deleteRule: "@request.auth.id = @collection.SC_user.id",
     options: {},
   });
 };
