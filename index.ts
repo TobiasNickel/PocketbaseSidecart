@@ -52,7 +52,7 @@ if (!options.opt.command) {
   options.opt.command = "run";
 }
 
-const HOST = options.opt.host || process.env.HOST || "https://localhost/"
+const HOST = options.opt.host || process.env.HOST || "https://localhost:8090/"
 const userName = options.opt.username || "sidecart"
 const password = options.opt.password || "sidecart"
 
