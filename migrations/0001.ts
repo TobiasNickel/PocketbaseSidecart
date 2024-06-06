@@ -194,12 +194,14 @@ export const up = async (db: PocketBase) => {
       {
         system: false,
         name: "textContent",
-        type: "editor",
+        type: "text",
         required: false,
         presentable: false,
         unique: false,
         options: {
-          convertUrls: false,
+          min: null,
+          max: null,
+          pattern: "",
         },
       },
       {
